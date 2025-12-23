@@ -1,0 +1,29 @@
+enabled: "true"
+level: "info"
+endpoint: ""
+
+# exporters：用于配置log数据输出到哪里
+# 可以选择console,file,http,protonMq 分别输出到控制台、文件、feeder、mq中
+# protonMq.config.sub_type 可以选择使用哪种MQ，目前可以选择的MQ范围为kafka
+exporters:
+  console:
+    enable: true
+  file:
+    enable: true
+    config:
+      path: /tmp/file.name
+  http:
+    enable: true
+    config:
+      endpoint: http://10.4.110.244/api/feed_ingester/v1/jobs/job-91f953f807788084/events
+  proton_mq:
+    enable: true
+    config:
+      sub_type: kafka
+      pub_server: "10.4.110.244"
+      pub_port: 31000
+      # subServer: "31000"
+      # subPort: 456
+      topic: opentelemetry.log
+      username: pEe/1ToFSNVkbnEJ6RYnGw==
+      password: 0wyMl36ec8LNe2Cqv9oq+g==

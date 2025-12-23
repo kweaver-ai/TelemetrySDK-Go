@@ -1,3 +1,7 @@
 *.out
 *.test
 *.html
+*.txt
+**/.idea/**
+./expoter/main
+./examples/main

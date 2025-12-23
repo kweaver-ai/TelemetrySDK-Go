@@ -4,13 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"testing"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/encoder"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/field"
-
-	"github.com/stretchr/testify/assert"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/encoder"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/exporter"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
 )
 
 func setTestSpance(s field.LogSpan) {
@@ -25,32 +23,32 @@ func TestOpenTelemetryWrite(t *testing.T) {
 	rootSpan := field.NewSpanFromPool(nil, nil)
 
 	setTestSpance(rootSpan)
-	b := bytes.NewBuffer(nil)
+	var rootSpans []field.LogSpan
+	rootSpans = append(rootSpans, rootSpan)
+	buf := bytes.NewBuffer(nil)
+	open := OpenTelemetryWriter(
+		encoder.NewJsonEncoder(buf),
+		field.IntField(0))
 
-	enc := encoder.NewJsonEncoder(b)
-	open := OpenTelemetry{
-		Encoder:  enc,
-		Resource: nil,
-	}
+	defer func(open Writer) {
+		_ = open.Close()
+	}(open)
 
-	defer open.Close()
-
-	err := open.Write(rootSpan)
+	err := open.Write(rootSpans)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
-	enc.Close()
 
 	// check result
-	cap := map[string]interface{}{}
-	bytes := b.Bytes()
+	capacity := map[string]interface{}{}
+	betty := buf.Bytes()
 	left := 0
 	i := 0
 	n := 0
-	for ; i < len(bytes); i += 1 {
-		if bytes[i] == '\n' {
-			if err = json.Unmarshal(bytes[left:i], &cap); err != nil {
+	for ; i < len(betty); i += 1 {
+		if betty[i] == '\n' {
+			if err = json.Unmarshal(betty[left:i], &capacity); err != nil {
 				t.Error(err)
 				t.FailNow()
 			} else {
@@ -59,29 +57,17 @@ func TestOpenTelemetryWrite(t *testing.T) {
 			left = i + 1
 		}
 	}
-	if left < len(bytes) {
-		if err = json.Unmarshal(bytes[left:i], &cap); err != nil {
+	if left < len(betty) {
+		if err = json.Unmarshal(betty[left:i], &capacity); err != nil {
 			t.Error(err)
 			t.FailNow()
-		} else {
-			n += 1
 		}
 	}
 
-	fmt.Print(b.String())
+	fmt.Print(buf.String())
 }
 
-func TestOpenTelemetrySetDefaultResources(t *testing.T) {
-	b := bytes.NewBuffer(nil)
-	enc := encoder.NewJsonEncoder(b)
-	open := NewOpenTelemetry(enc, nil)
-	os.Setenv("HOSTNAME", "test")
-	f := field.MallocStructField(10)
-	f.Set("HOSTNAME", field.StringField("test"))
-	f.Set("Telemetry.SDK.Name", field.StringField(SDKName))
-	f.Set("Telemetry.SDK.Version", field.StringField(SDKVersion))
-	f.Set("Telemetry.SDK.Language", field.StringField(SDKLanguage))
-
-	open.SetDefaultResources()
-	assert.Equal(t, open.Resource, f)
+func TestNewSyncWriter(t *testing.T) {
+	w := NewSyncWriter(encoder.NewSyncEncoder(exporter.SyncRealTimeExporter()), nil)
+	_ = w.Close()
 }

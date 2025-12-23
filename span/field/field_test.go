@@ -9,9 +9,9 @@ import (
 )
 
 func TestArrayField(t *testing.T) {
-	cap := 10
+	capacity := 10
 	length := 11
-	f := MallocArrayField(cap)
+	f := MallocArrayField(capacity)
 
 	for i := 0; i < length; i += 1 {
 		f.Append(IntField(i))
@@ -42,9 +42,9 @@ func TestArrayField(t *testing.T) {
 }
 
 func TestStructField(t *testing.T) {
-	cap := 10
+	capacity := 10
 	length := 11
-	f := MallocStructField(cap)
+	f := MallocStructField(capacity)
 	for i := 0; i < length; i += 1 {
 		f.Set(strconv.Itoa(i), IntField(i))
 	}
@@ -80,14 +80,14 @@ func TestStructField(t *testing.T) {
 }
 
 func TestFieldType(t *testing.T) {
-	assert.Equal(t, FieldTpye(IntType), IntField(0).Type())
-	assert.Equal(t, FieldTpye(Float64Type), Float64Field(0).Type())
-	assert.Equal(t, FieldTpye(StringType), StringField("").Type())
-	assert.Equal(t, FieldTpye(TimeType), TimeField(time.Now()).Type())
-	assert.Equal(t, FieldTpye(ArrayType), MallocArrayField(0).Type())
-	assert.Equal(t, FieldTpye(StructType), MallocStructField(0).Type())
+	assert.Equal(t, FieldType(IntType), IntField(0).Type())
+	assert.Equal(t, FieldType(Float64Type), Float64Field(0).Type())
+	assert.Equal(t, FieldType(StringType), StringField("").Type())
+	assert.Equal(t, FieldType(TimeType), TimeField(time.Now()).Type())
+	assert.Equal(t, FieldType(ArrayType), MallocArrayField(0).Type())
+	assert.Equal(t, FieldType(StructType), MallocStructField(0).Type())
 
-	assert.Equal(t, FieldTpye(JsonType), (&JsonFiled{}).Type())
+	assert.Equal(t, FieldType(JsonType), (&JsonFiled{}).Type())
 }
 
 func TestMallocJsonField(t *testing.T) {
@@ -95,5 +95,52 @@ func TestMallocJsonField(t *testing.T) {
 	}
 	var p = &People{}
 	j := MallocJsonField(p)
-	assert.Equal(t, FieldTpye(JsonType), j.Type())
+	assert.Equal(t, FieldType(JsonType), j.Type())
+}
+
+func TestAllProtect(t *testing.T) {
+	var (
+		intField     IntField
+		float64Field Float64Field
+		stringField  StringField
+		timeField    TimeField
+		arrayField   ArrayField
+		structField  StructField
+		jsonFiled    JsonFiled
+		mapField     MapField
+	)
+	intField.protect()
+	float64Field.protect()
+	stringField.protect()
+	timeField.protect()
+	arrayField.protect()
+	structField.protect()
+	jsonFiled.protect()
+	mapField.protect()
+}
+
+func TestMapFieldAppend(t *testing.T) {
+	type args struct {
+		key   string
+		value Field
+	}
+	tests := []struct {
+		name string
+		f    MapField
+		args args
+	}{
+		{
+			"",
+			nil,
+			args{
+				key:   "123",
+				value: StringField("456"),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.f.Append(tt.args.key, tt.args.value)
+		})
+	}
 }

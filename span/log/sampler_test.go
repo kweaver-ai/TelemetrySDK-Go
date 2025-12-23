@@ -5,14 +5,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"testing"
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/encoder"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/field"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/open_standard"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/runtime"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/encoder"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/open_standard"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/runtime"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -59,27 +59,29 @@ func testLogField(l *SamplerLogger) {
 	l.FatalField(FatalLevelString, "test")
 }
 
-func testLogLevel(t *testing.T, l *SamplerLogger, level int) {
+func testLogLevel(l *SamplerLogger, level int) {
 	l.SetLevel(level)
 	testLogString(l)
 	testLogField(l)
 }
 
 func TestSamplerLoggerSpan(t *testing.T) {
-	buf := ioutil.Discard
+	buf := io.Discard
 	l := NewDefaultSamplerLogger()
-	run := runtime.NewRuntime(&open_standard.OpenTelemetry{
-		Encoder: encoder.NewJsonEncoder(buf),
-	}, field.NewSpanFromPool)
+	run := runtime.NewRuntime(
+		open_standard.OpenTelemetryWriter(
+			encoder.NewJsonEncoder(buf),
+			field.IntField(0)),
+		field.NewSpanFromPool)
 	l.SetRuntime(run)
 	go run.Run()
 
-	testLogLevel(t, l, TraceLevel)
-	testLogLevel(t, l, DebugLevel)
-	testLogLevel(t, l, InfoLevel)
-	testLogLevel(t, l, WarnLevel)
-	testLogLevel(t, l, ErrorLevel)
-	testLogLevel(t, l, FatalLevel)
+	testLogLevel(l, TraceLevel)
+	testLogLevel(l, DebugLevel)
+	testLogLevel(l, InfoLevel)
+	testLogLevel(l, WarnLevel)
+	testLogLevel(l, ErrorLevel)
+	testLogLevel(l, FatalLevel)
 
 	l.Close()
 }
@@ -121,9 +123,11 @@ func TestSampleCheck(t *testing.T) {
 func TestSamplerLoggerNil(t *testing.T) {
 	buf := bytes.NewBuffer(nil)
 	l := NewDefaultSamplerLogger()
-	run := runtime.NewRuntime(&open_standard.OpenTelemetry{
-		Encoder: encoder.NewJsonEncoder(buf),
-	}, field.NewSpanFromPool)
+	run := runtime.NewRuntime(
+		open_standard.OpenTelemetryWriter(
+			encoder.NewJsonEncoder(buf),
+			field.IntField(0)),
+		field.NewSpanFromPool)
 	l.SetRuntime(run)
 	l.LogLevel = AllLevel
 	go run.Run()
@@ -158,9 +162,11 @@ func TestSamplerLoggerNil(t *testing.T) {
 func TestSamplerLoggerClose(t *testing.T) {
 	buf := bytes.NewBuffer(nil)
 	l := NewDefaultSamplerLogger()
-	enc := encoder.NewJsonEncoder(buf)
-	ot := open_standard.NewOpenTelemetry(enc, nil)
-	run := runtime.NewRuntime(&ot, field.NewSpanFromPool)
+	run := runtime.NewRuntime(
+		open_standard.OpenTelemetryWriter(
+			encoder.NewJsonEncoder(buf),
+			field.IntField(0)),
+		field.NewSpanFromPool)
 	l.SetRuntime(run)
 	go run.Run()
 
@@ -187,9 +193,11 @@ func TestSamplerLogger(t *testing.T) {
 	// 0. create logger and start runtime
 	buf := bytes.NewBuffer(nil)
 	l := NewDefaultSamplerLogger()
-	run := runtime.NewRuntime(&open_standard.OpenTelemetry{
-		Encoder: encoder.NewJsonEncoder(buf),
-	}, field.NewSpanFromPool)
+	run := runtime.NewRuntime(
+		open_standard.OpenTelemetryWriter(
+			encoder.NewJsonEncoder(buf),
+			field.IntField(0)),
+		field.NewSpanFromPool)
 	l.SetRuntime(run)
 	l.LogLevel = AllLevel
 	go run.Run()
@@ -213,33 +221,130 @@ func TestSamplerLogger(t *testing.T) {
 
 	time.Sleep(1 * time.Second)
 
-	cap := map[string]interface{}{}
-	bytes := buf.Bytes()
+	capacity := map[string]interface{}{}
+	betty := buf.Bytes()
 	left := 0
 	i := 0
 	n := 0
-	for ; i < len(bytes); i += 1 {
-		if bytes[i] == '\n' {
-			if err := json.Unmarshal(bytes[left:i], &cap); err != nil {
+	for ; i < len(betty); i += 1 {
+		if betty[i] == '\n' {
+			if err := json.Unmarshal(betty[left:i], &capacity); err != nil {
 				t.Error(err)
 				t.FailNow()
 			} else {
 				n += 1
-				fmt.Println(string(bytes[left:i]))
+				fmt.Println(string(betty[left:i]))
 				fmt.Println()
 			}
 			left = i + 1
 		}
 	}
-	if left < len(bytes) {
-		if err := json.Unmarshal(bytes[left:i], &cap); err != nil {
+	if left < len(betty) {
+		if err := json.Unmarshal(betty[left:i], &capacity); err != nil {
 			t.Error(err)
 			t.FailNow()
-		} else {
-			n += 1
-			fmt.Println(string(bytes[left:i]))
 		}
 	}
+}
 
-	// fmt.Print(buf.String())
+func TestSamplerLoggerSetSample(t *testing.T) {
+	type fields struct {
+		Sample   float32
+		LogLevel int
+		runtime  *runtime.Runtime
+		ctx      context.Context
+	}
+	type args struct {
+		sample float32
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			"",
+			fields{
+				Sample:   0.0,
+				LogLevel: 2,
+				runtime:  nil,
+				ctx:      nil,
+			},
+			args{0.5},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &SamplerLogger{
+				Sample:   tt.fields.Sample,
+				LogLevel: tt.fields.LogLevel,
+				runtime:  tt.fields.runtime,
+				ctx:      tt.fields.ctx,
+			}
+			s.SetSample(tt.args.sample)
+		})
+	}
+}
+
+func TestSamplerLoggerAllLogLevel(t *testing.T) {
+	type fields struct {
+		Sample   float32
+		LogLevel int
+		runtime  *runtime.Runtime
+		ctx      context.Context
+	}
+	type args struct {
+		message      string
+		messageField field.Field
+		typ          string
+		options      []field.LogOptionFunc
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+	}{
+		{
+			"",
+			fields{
+				Sample:   0,
+				LogLevel: 7,
+				runtime:  nil,
+				ctx:      nil,
+			},
+			args{
+				message:      "123",
+				messageField: field.StringField("456"),
+				typ:          "type_test",
+				options:      nil,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &SamplerLogger{
+				Sample:   tt.fields.Sample,
+				LogLevel: tt.fields.LogLevel,
+				runtime:  tt.fields.runtime,
+				ctx:      tt.fields.ctx,
+			}
+			s.Trace(tt.args.message, tt.args.options...)
+			s.Debug(tt.args.message, tt.args.options...)
+			s.Info(tt.args.message, tt.args.options...)
+			s.Warn(tt.args.message, tt.args.options...)
+			s.Error(tt.args.message, tt.args.options...)
+			s.Fatal(tt.args.message, tt.args.options...)
+			s.TraceField(tt.args.messageField, tt.args.typ, tt.args.options...)
+			s.DebugField(tt.args.messageField, tt.args.typ, tt.args.options...)
+			s.InfoField(tt.args.messageField, tt.args.typ, tt.args.options...)
+			s.WarnField(tt.args.messageField, tt.args.typ, tt.args.options...)
+			s.ErrorField(tt.args.messageField, tt.args.typ, tt.args.options...)
+			s.FatalField(tt.args.messageField, tt.args.typ, tt.args.options...)
+		})
+	}
+}
+
+func TestNewSamplerLogger(t *testing.T) {
+	l := NewSamplerLogger()
+	l.Close()
 }

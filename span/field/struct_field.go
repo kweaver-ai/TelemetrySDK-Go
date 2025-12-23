@@ -21,7 +21,7 @@ func (f *StructField) Length() int {
 	return len(f.keys)
 }
 
-// At(i int) return  a readonly Field in location i
+// At (i int) return  a readonly Field in location i
 func (f *StructField) At(i int) (string, Field, error) {
 	if i >= f.Length() {
 		return "", nil, OverIndexError

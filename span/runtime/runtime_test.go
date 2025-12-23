@@ -3,53 +3,37 @@ package runtime
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"runtime"
+	"io"
 	"testing"
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/encoder"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/field"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/open_standard"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/encoder"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/open_standard"
 )
-
-func fakeTestStructField() field.Field {
-	_, msg, line, _ := runtime.Caller(1)
-
-	res := field.MallocStructField(4)
-	res.Set("Level", field.IntField(0))
-	res.Set("Model", field.StringField("test Eacape \\\"\b\f\\t{}\r\n"))
-	res.Set("Message", field.StringField(fmt.Sprintf("%s: %d", msg, line)))
-	res.Set("eventNum", field.IntField(1))
-
-	return res
-}
 
 func setTestSpance(s field.LogSpan) {
 	r1 := field.MallocStructField(2)
 	r1.Set("Level", field.IntField(1))
 	r1.Set("eventNum", field.IntField(2))
 	s.SetRecord(r1)
-
 }
 
 func TestRecord(t *testing.T) {
 	// runtimeSpan := NewRuntime(NewSpanFromPool)
 	buf := bytes.NewBuffer(nil)
-	writer := &open_standard.OpenTelemetry{
-		Encoder: encoder.NewJsonEncoder(buf),
-	}
+	writer := open_standard.OpenTelemetryWriter(
+		encoder.NewJsonEncoder(buf),
+		field.IntField(0))
 	runtimeSpan := NewRuntime(writer, field.NewSpanFromPool)
 	// go runtimeSpan.Run()
-
+	runtimeSpan.SetUploadInternalAndMaxLog(3*time.Second, 10)
 	// task thread0, log quick
 	go func() {
 		// a new web request task
-		root := runtimeSpan.Children(nil)
-
+		root := runtimeSpan.Children(nil) //nolint
 		// web request complete, wait children span
 		// finally send web's span control to loger runtime
 		defer root.Signal()
@@ -59,36 +43,35 @@ func TestRecord(t *testing.T) {
 	}()
 	// task thread1, live 1s
 	go func() {
-		root := runtimeSpan.Children(nil)
+		root := runtimeSpan.Children(nil) //nolint
 		defer root.Signal()
 		setTestSpance(root)
 
 		time.Sleep(1 * time.Second)
-
 	}()
 
 	// stop runtime after 2s
 	go func() {
-		time.Sleep(2 * time.Second)
+		time.Sleep(4 * time.Second)
 		runtimeSpan.Signal()
 	}()
 
 	runtimeSpan.Run()
 
 	// test runtime stop
-	after_stop := runtimeSpan.Children(nil)
-	assert.Equal(t, nil, after_stop)
+	afterStop := runtimeSpan.Children(nil) //nolint
+	assert.Equal(t, nil, afterStop)
 
 	// check result
 	var err error
-	cap := map[string]interface{}{}
-	bytes := buf.Bytes()
+	capacity := map[string]interface{}{}
+	betty := buf.Bytes()
 	left := 0
 	i := 0
 	n := 0
-	for ; i < len(bytes); i += 1 {
-		if bytes[i] == '\n' {
-			if err = json.Unmarshal(bytes[left:i], &cap); err != nil {
+	for ; i < len(betty); i += 1 {
+		if betty[i] == '\n' {
+			if err = json.Unmarshal(betty[left:i], &capacity); err != nil {
 				t.Error(err)
 				t.FailNow()
 			} else {
@@ -97,8 +80,8 @@ func TestRecord(t *testing.T) {
 			left = i + 1
 		}
 	}
-	if left < len(bytes) {
-		if err = json.Unmarshal(bytes[left:i], &cap); err != nil {
+	if left < len(betty) {
+		if err = json.Unmarshal(betty[left:i], &capacity); err != nil {
 			t.Error(err)
 			t.FailNow()
 		} else {
@@ -112,7 +95,7 @@ func TestRecord(t *testing.T) {
 
 func TestSignal(t *testing.T) {
 	writer := &open_standard.OpenTelemetry{
-		Encoder: encoder.NewJsonEncoder(ioutil.Discard),
+		Encoder: encoder.NewJsonEncoder(io.Discard),
 	}
 	runtimeSpan := NewRuntime(writer, field.NewSpanFromPool)
 

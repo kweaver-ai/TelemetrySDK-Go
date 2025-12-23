@@ -2,10 +2,17 @@ package runtime
 
 import (
 	"context"
+	"log"
 	"sync"
+	"time"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/field"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/open_standard"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/open_standard"
+)
+
+var (
+	defaultInternal = 10 * time.Second
+	defaultMaxLog   = 40
 )
 
 // Runtime read data from channel and write data in a single goroutine
@@ -20,6 +27,10 @@ type Runtime struct {
 	runLock   sync.Mutex
 	w         open_standard.Writer
 	once      sync.Once
+	logs      []field.LogSpan
+	size      int
+	maxLog    int
+	internal  time.Duration
 }
 
 // NewRuntime return a runtime
@@ -34,9 +45,13 @@ func NewRuntime(w open_standard.Writer, builder func(func(field.LogSpan), contex
 		// protect the close value
 		closeLock: sync.RWMutex{},
 		// represent the state of runtime thread, runtime thread will lock this until thread over
-		runLock: sync.Mutex{},
-		w:       w,
-		once:    sync.Once{},
+		runLock:  sync.Mutex{},
+		w:        w,
+		once:     sync.Once{},
+		size:     0,
+		logs:     make([]field.LogSpan, 0, defaultMaxLog+1),
+		maxLog:   defaultMaxLog,
+		internal: defaultInternal,
 	}
 
 	return r
@@ -46,7 +61,7 @@ func NewRuntime(w open_standard.Writer, builder func(func(field.LogSpan), contex
 // if Runtime has been close return nil
 // user should return span's onwership after Span is useless by Span.Signal()
 func (r *Runtime) Children(ctx context.Context) field.LogSpan {
-	// TODO: remove read lock
+	//remove read lock
 	r.closeLock.RLock()
 	defer r.closeLock.RUnlock()
 
@@ -58,19 +73,21 @@ func (r *Runtime) Children(ctx context.Context) field.LogSpan {
 	return s
 }
 
-//Signal stop runtime thread
+// Signal stop runtime thread
 func (r *Runtime) Signal() {
 	r.closeLock.Lock()
 	r.close = true
 	r.wg.Wait()
+	if r.size > 0 {
+		r.forceWrite()
+	}
 	r.once.Do(func() {
 		r.stop <- 0
 		close(r.cache)
-		// r.close = true
-		r.w.Close()
+		_ = r.w.Close()
 	})
-
 	r.runLock.Lock()
+	//nolint 这里不去掉是因为git提交记录[bugfix](runtime) 关闭runtime线程与runtime运行线程同步问题可能导致数据丢失
 	r.runLock.Unlock()
 	r.closeLock.Unlock()
 }
@@ -86,17 +103,50 @@ func (r *Runtime) transfer(s field.LogSpan) {
 func (r *Runtime) Run() {
 	r.runLock.Lock()
 	defer r.runLock.Unlock()
+	Ticker := time.NewTicker(r.internal)
 	for {
-		s, ok := <-(r.cache)
-		if ok != true {
-			err := r.w.Close()
-			if err != nil {
-				panic(err)
+		select {
+		case s, ok := <-(r.cache):
+			// 关闭之后退出循环。
+			if !ok {
+				// 发完最后的数据关闭Exporter。
+				err := r.w.Close()
+				if err != nil {
+					log.Println(field.GenerateSpecificError(err))
+				}
+				return
 			}
-			return
+			r.logs = append(r.logs, s)
+			r.size++
+			r.wg.Done()
+			// 超过上限发送。
+			if r.size >= r.maxLog {
+				r.forceWrite()
+			}
+		// 定时发送。
+		case <-Ticker.C:
+			if r.size > 0 {
+				r.forceWrite()
+			}
 		}
-		r.w.Write(s)
-		s.Free()
-		r.wg.Done()
 	}
+}
+
+func (r *Runtime) forceWrite() {
+	err := r.w.Write(r.logs)
+	if err != nil {
+		log.Println(field.GenerateSpecificError(err))
+	}
+	// 发送完之后清空队列。
+	for _, v := range r.logs {
+		v.Free()
+	}
+	r.size = 0
+	r.logs = make([]field.LogSpan, 0, r.maxLog+1)
+}
+
+func (r *Runtime) SetUploadInternalAndMaxLog(Internal time.Duration, MaxLog int) {
+	r.internal = Internal
+	r.maxLog = MaxLog
+	r.logs = make([]field.LogSpan, 0, r.maxLog+1)
 }

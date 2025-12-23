@@ -1,9 +1,7 @@
+// Package log
 // Provide some interfaces of logger
-//
 // looger can use to record string log of any object Log in the form of field
-//
 // logger can use to log internal thread/task with InteranlSpan.
-//
 // A LogSpan use to describe a thread job info or a task info. You can get a thread context info ever recorded.
 // And then aggregation Span by TraceID or describe a Trace tree by SpanID and TraceID
 package log
@@ -13,9 +11,97 @@ import (
 	"math/rand"
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/field"
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/runtime"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/runtime"
 )
+
+type Logger interface {
+	// SetSample set the log sample
+	// sample number from 0 to 1.0
+	SetSample(sample float32)
+
+	// SetLevel set Logger level
+	// level can be log.AllLevel,log.debugLevel,...,log.OffLevel
+	SetLevel(level int)
+
+	// Close logger
+	Close()
+
+	// SetRuntime for logger
+	SetRuntime(*runtime.Runtime)
+	// TraceField do a trace log a object into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	TraceField(message field.Field, typ string, options ...field.LogOptionFunc)
+
+	// DebugField do a debug log a object into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	DebugField(message field.Field, typ string, options ...field.LogOptionFunc)
+
+	// InfoField do a Info log a object into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	InfoField(message field.Field, typ string, options ...field.LogOptionFunc)
+
+	// WarnField do a Warn log a object into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	WarnField(message field.Field, typ string, options ...field.LogOptionFunc)
+
+	// ErrorField do a Error log a object into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	ErrorField(message field.Field, typ string, options ...field.LogOptionFunc)
+
+	// FatalField do a Fatal log a object into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	FatalField(message field.Field, typ string, options ...field.LogOptionFunc)
+
+	// Trace do a trace string log into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	Trace(message string, options ...field.LogOptionFunc)
+
+	// Debug do a Debug string log into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// but not signal the LogSpan
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	Debug(message string, options ...field.LogOptionFunc)
+
+	// Info do a Info string log into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	Info(message string, options ...field.LogOptionFunc)
+
+	// Warn do a Warn string log into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	Warn(message string, options ...field.LogOptionFunc)
+
+	// Error do a Error string log into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	Error(message string, options ...field.LogOptionFunc)
+
+	// Fatal do a Fatal string log into LogSpan,
+	// if LogSpan is not nil, this interface will log the info,
+	// if LogSpan is nil, this interface will create a LogSpan
+	// to log the info and signal the LogSpan.
+	Fatal(message string, options ...field.LogOptionFunc)
+}
 
 type SamplerLogger struct {
 	// logger sample
@@ -24,6 +110,14 @@ type SamplerLogger struct {
 	LogLevel int
 	runtime  *runtime.Runtime
 	ctx      context.Context
+}
+
+func NewSamplerLogger(opts ...LoggerStartOption) Logger {
+	cfg := newLoggerStartConfig(opts...)
+	return &SamplerLogger{
+		Sample:   cfg.Sample,
+		LogLevel: cfg.LogLevel,
+	}
 }
 
 func NewDefaultSamplerLogger() *SamplerLogger {
@@ -40,7 +134,7 @@ func newRecord(typ string, message field.Field) field.Field {
 	return record
 }
 
-// close logger
+// Close logger
 func (s *SamplerLogger) Close() {
 	if s.runtime != nil {
 		s.runtime.Signal()
@@ -72,9 +166,8 @@ func (s *SamplerLogger) sampleCheck() bool {
 		return false
 	}
 
-	rand.Seed(time.Now().UnixNano())
-
-	return rand.Float32() <= s.Sample
+	newRand := rand.New(rand.NewSource(time.Now().UnixNano()))
+	return newRand.Float32() <= s.Sample
 }
 
 // SetSample set the log sample

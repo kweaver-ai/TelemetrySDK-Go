@@ -2,17 +2,19 @@ package field
 
 import (
 	"context"
-	crand "crypto/rand"
-	"encoding/binary"
-	"math/rand"
 	"sync"
 
 	"go.opentelemetry.io/otel/trace"
 )
 
+var (
+	defaultSpanID  = "0000000000000000"
+	defaultTraceID = "00000000000000000000000000000000"
+)
+
 type LogSpan interface {
 	GetAttributes() Field
-	// Recode record log
+	// SetRecord Recode record log
 	SetRecord(Field)
 
 	GetRecord() Field
@@ -53,10 +55,8 @@ type logSpanV1 struct {
 
 	lock sync.RWMutex
 	//traceID    string
-	ctx context.Context
-
-	genID      *randomIDGenerator
-	attributes Field
+	ctx        context.Context
+	attributes MapField
 }
 
 var Pool = sync.Pool{
@@ -65,7 +65,11 @@ var Pool = sync.Pool{
 	},
 }
 
-// NewSpan get span from sync.pool
+func SyncLog() LogSpan {
+	return &logSpanV1{}
+}
+
+// NewSpanFromPool get span from sync.pool
 func NewSpanFromPool(own func(LogSpan), ctx context.Context) LogSpan {
 	s := Pool.Get().(*logSpanV1)
 	// s.reset()
@@ -84,7 +88,6 @@ func newSpan(own func(LogSpan), ctx context.Context) LogSpan {
 
 func (l *logSpanV1) init() {
 	l.lock = sync.RWMutex{}
-	l.genID = defaultIDGenerator()
 	l.level = StringField("Trace")
 	l.reset()
 }
@@ -150,7 +153,7 @@ func (l *logSpanV1) SetLogLevel(level Field) {
 	l.level = level
 }
 
-// ctx is nil or not trace context,return true
+// IsNilContext ctx is nil or not trace context,return true
 func (l *logSpanV1) IsNilContext() bool {
 	spanCtx := l.getTraceSpan().SpanContext()
 	return l.ctx == nil || (spanCtx.TraceID() == trace.TraceID{} && spanCtx.SpanID() == trace.SpanID{})
@@ -158,45 +161,14 @@ func (l *logSpanV1) IsNilContext() bool {
 
 func (l *logSpanV1) TraceID() string {
 	if l.IsNilContext() {
-		return l.genID.NewTraceID()
+		return defaultTraceID
 	}
 	return l.getTraceSpan().SpanContext().TraceID().String()
 }
 
 func (l *logSpanV1) SpanID() string {
 	if l.IsNilContext() {
-		return l.genID.NewSpanID()
+		return defaultSpanID
 	}
 	return l.getTraceSpan().SpanContext().SpanID().String()
-}
-
-type randomIDGenerator struct {
-	sync.Mutex
-	randSource *rand.Rand
-}
-
-func (gen *randomIDGenerator) NewSpanID() string {
-	gen.Lock()
-	defer gen.Unlock()
-	sid := trace.SpanID{}
-	gen.randSource.Read(sid[:])
-	return sid.String()
-}
-
-// NewIDs returns a non-zero trace ID and a non-zero span ID from a
-// randomly-chosen sequence.
-func (gen *randomIDGenerator) NewTraceID() string {
-	gen.Lock()
-	defer gen.Unlock()
-	tid := trace.TraceID{}
-	gen.randSource.Read(tid[:])
-	return tid.String()
-}
-
-func defaultIDGenerator() *randomIDGenerator {
-	gen := &randomIDGenerator{}
-	var rngSeed int64
-	_ = binary.Read(crand.Reader, binary.LittleEndian, &rngSeed)
-	gen.randSource = rand.New(rand.NewSource(rngSeed))
-	return gen
 }
