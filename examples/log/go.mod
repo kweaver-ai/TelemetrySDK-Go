@@ -7,9 +7,6 @@ require (
 	github.com/segmentio/kafka-go v0.4.49
 )
 
-
-
-
 require (
 	github.com/AISHU-Technology/TelemetrySDK-Go/event/v2 v2.10.0 // indirect
 	github.com/AISHU-Technology/TelemetrySDK-Go/span/v2 v2.10.0 // indirect
@@ -94,9 +91,8 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-
 replace (
+	github.com/AISHU-Technology/TelemetrySDK-Go/event/v2 => ./../../event
 	github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2 => ./../../exporter
 	github.com/AISHU-Technology/TelemetrySDK-Go/span/v2 => ./../../span
-	github.com/AISHU-Technology/TelemetrySDK-Go/event/v2 => ./../../event
 )
