@@ -34,7 +34,7 @@ func desensitizeUserName(name string) string {
 func getUser(id string) string {
 	client := http.Client{}
 
-	url := fmt.Sprintf("http://127.0.0.1:50081/users/%s", id)
+	url := fmt.Sprintf("http://localhost:50081/users/%s", id)
 	resp, err := client.Get(url)
 	if err != nil {
 		fmt.Println("请求失败:", err)

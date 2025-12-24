@@ -38,10 +38,10 @@ func Test_send(t *testing.T) {
 func Benchmark_SendTest(b *testing.B) {
 
 	w := &kafka.Writer{
-		Addr:  kafka.TCP("10.4.110.244:31000"),
+		Addr:  kafka.TCP("localhost:31000"),
 		Topic: "topic_benchmark",
 		Transport: &kafka.Transport{
-			SASL: plain.Mechanism{Username: "anyrobot", Password: "eisoo.com123"},
+			SASL: plain.Mechanism{Username: "test", Password: "testpwd"},
 		},
 		BatchSize:              1,
 		BatchTimeout:           time.Second * 10,

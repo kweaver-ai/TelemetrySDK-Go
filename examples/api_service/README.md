@@ -24,7 +24,7 @@ go run observable/portal_service/portal_service_observability.go
 ```
 5、模拟外部请求
 ```shell
-curl 127.0.0.1:50080/users/1
-curl 127.0.0.1:50080/users/2
+curl localhost:50080/users/1
+curl localhost:50080/users/2
 ```
 6、登录AnyRobot Embedded 5仪表盘页面查看应用软件可观测仪表盘

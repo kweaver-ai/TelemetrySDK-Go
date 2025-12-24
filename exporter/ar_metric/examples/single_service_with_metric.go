@@ -105,7 +105,7 @@ func StdoutMetricInit() {
 
 // 导出到数据接收器
 func HTTPMetricInit() {
-	metricClient := public.NewHTTPClient(public.WithAnyRobotURL("http://10.4.71.156/api/feed_ingester/v1/jobs/test-otel-metric/events"),
+	metricClient := public.NewHTTPClient(public.WithAnyRobotURL("http://localhost/api/feed_ingester/v1/jobs/test-otel-metric/events"),
 		public.WithCompression(1), public.WithTimeout(10*time.Second), public.WithRetry(true, 5*time.Second, 30*time.Second, 1*time.Minute))
 	metricExporter := ar_metric.NewExporter(metricClient)
 	public.SetServiceInfo("YourServiceName", "1.0.0", "983d7e1d5e8cda64")
@@ -174,7 +174,7 @@ func HTTPExample() {
 func WithAllExample() {
 	public.SetServiceInfo("YourServiceName", "1.0.0", "983d7e1d5e8cda64")
 	ctx := context.Background()
-	metricClient := public.NewHTTPClient(public.WithAnyRobotURL("http://127.0.0.1/api/feed_ingester/v1/jobs/job-864ab9d78f6a1843/events"),
+	metricClient := public.NewHTTPClient(public.WithAnyRobotURL("http://localhost/api/feed_ingester/v1/jobs/job-864ab9d78f6a1843/events"),
 		public.WithCompression(1), public.WithTimeout(10*time.Second), public.WithRetry(true, 5*time.Second, 30*time.Second, 1*time.Minute))
 	metricExporter := ar_metric.NewExporter(metricClient)
 	metricProvider := sdkmetric.NewMeterProvider(

@@ -85,7 +85,7 @@ func getUser(id string, ctx context.Context) string {
 
 	client := http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
 
-	url := fmt.Sprintf("http://127.0.0.1:50081/users/%s", id)
+	url := fmt.Sprintf("http://localhost:50081/users/%s", id)
 	req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
 	resp, err := client.Do(req)
 	if err != nil {
