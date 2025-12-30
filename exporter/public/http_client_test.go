@@ -13,7 +13,7 @@ import (
 	"github.com/agiledragon/gomonkey/v2"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
 )
 
 func TestHTTPClientPath(t *testing.T) {

@@ -5,9 +5,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/custom_errors"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/resource"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/custom_errors"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/resource"
 )
 
 // SetServiceInfo 设置服务信息，包括服务名、版本号、实例ID。

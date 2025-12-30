@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/custom_errors"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/custom_errors"
 )
 
 // EventProvider 批量发送数据到 AnyRobot Feed Ingester 的Event数据接收器。

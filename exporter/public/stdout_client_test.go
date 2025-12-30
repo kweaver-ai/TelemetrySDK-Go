@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/eventsdk"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/eventsdk"
 )
 
 func TestNewStdoutClient(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/exporter"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/exporter"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 )
 
 // SyncEncoder 同步模式专用，只能上报到一个地址。

@@ -8,7 +8,7 @@ import (
 
 	"github.com/cenkalti/backoff/v4"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/custom_errors"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/custom_errors"
 )
 
 // RetryConfig 当可观测性数据发送失败时，根据重发机制来重新发送，保障数据不漏。

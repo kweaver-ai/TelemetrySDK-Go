@@ -9,9 +9,9 @@ import (
 	"go.opentelemetry.io/otel/metric"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_metric"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/version"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_metric"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/version"
 )
 
 const result = "the answer is"

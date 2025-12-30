@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/eventsdk"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/eventsdk"
 )
 
 func TestEventResource(t *testing.T) {

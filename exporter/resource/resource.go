@@ -10,9 +10,9 @@ import (
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/eventsdk"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/version"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/eventsdk"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/version"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 )
 
 // 用户未设置服务信息时的默认值，服务名可以自动获取。

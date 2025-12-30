@@ -12,8 +12,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
 )
 
 func TestNewExporter(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
 )
 
 func contextWithDone() context.Context {

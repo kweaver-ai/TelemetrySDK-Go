@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/encoder"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/exporter"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/encoder"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/exporter"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 )
 
 func setTestSpance(s field.LogSpan) {

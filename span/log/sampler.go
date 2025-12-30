@@ -11,8 +11,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/runtime"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/runtime"
 )
 
 type Logger interface {

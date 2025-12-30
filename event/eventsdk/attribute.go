@@ -5,7 +5,7 @@ import (
 
 	"github.com/shirou/gopsutil/v3/host"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/version"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/version"
 )
 
 // Attribute 对外暴露的 attribute 接口。

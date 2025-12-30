@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/eventsdk"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/eventsdk"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
 )
 
 func contextWithDone() context.Context {

@@ -27,11 +27,11 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/common"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/resource"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/version"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/common"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/resource"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/version"
 )
 
 // 跨包实现接口占位用。

@@ -9,7 +9,7 @@ import (
 	"github.com/segmentio/kafka-go"
 	"github.com/segmentio/kafka-go/sasl/plain"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_log"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_log"
 )
 
 func Benchmark_InfoWithProton(b *testing.B) {

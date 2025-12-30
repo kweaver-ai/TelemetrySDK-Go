@@ -3,13 +3,11 @@ module examplelog
 go 1.24.0
 
 require (
-	github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2 v2.10.0
-	github.com/AISHU-Technology/TelemetrySDK-Go/span/v2 v2.10.0
+	github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.2
+	github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.2
 )
 
 require (
-	github.com/AISHU-Technology/TelemetrySDK-Go/event/v2 v2.10.0 // indirect
-	github.com/AISHU-Technology/proton-mq-sdk-go v1.9.0 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
@@ -31,7 +29,9 @@ require (
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
+	github.com/kweaver-ai/TelemetrySDK-Go/event/v2 v2.10.2 // indirect
+	github.com/kweaver-ai/proton-mq-sdk-go v1.9.1 // indirect
 	github.com/lufia/plan9stats v0.0.0-20220913051719-115f729f3c8c // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -92,7 +92,7 @@ require (
 )
 
 replace (
-	github.com/AISHU-Technology/TelemetrySDK-Go/event/v2 => ./../../event
-	github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2 => ./../../exporter
-	github.com/AISHU-Technology/TelemetrySDK-Go/span/v2 => ./../../span
+	github.com/kweaver-ai/TelemetrySDK-Go/event/v2 => ./../../event
+	github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 => ./../../exporter
+	github.com/kweaver-ai/TelemetrySDK-Go/span/v2 => ./../../span
 )

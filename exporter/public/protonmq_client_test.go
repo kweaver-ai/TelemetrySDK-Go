@@ -3,9 +3,9 @@ package public
 import (
 	"testing"
 
-	msqclient "github.com/AISHU-Technology/proton-mq-sdk-go"
+	msqclient "github.com/kweaver-ai/proton-mq-sdk-go"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
 )
 
 var (

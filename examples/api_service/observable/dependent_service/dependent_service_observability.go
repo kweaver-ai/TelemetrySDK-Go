@@ -12,9 +12,9 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_log"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_trace"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/resource"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_log"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/resource"
 )
 
 type User struct {

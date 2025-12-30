@@ -9,9 +9,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/encoder"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/open_standard"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/encoder"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/open_standard"
 )
 
 func setTestSpance(s field.LogSpan) {

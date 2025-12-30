@@ -14,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/custom_errors"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/custom_errors"
 )
 
 // HttpClient 客户端结构体。

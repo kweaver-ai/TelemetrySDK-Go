@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_log"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_log"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 )
 
 func main() {

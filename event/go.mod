@@ -1,4 +1,4 @@
-module github.com/AISHU-Technology/TelemetrySDK-Go/event/v2
+module github.com/kweaver-ai/TelemetrySDK-Go/event/v2
 
 go 1.24.0
 

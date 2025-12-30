@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_log"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_log"
 )
 
 func main() {

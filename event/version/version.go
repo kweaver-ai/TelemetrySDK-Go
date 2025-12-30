@@ -5,5 +5,5 @@ package version
 const (
 	EventInstrumentationName    = "TelemetrySDK-Go/exporter/ar_event"
 	EventInstrumentationVersion = "2.10.0"
-	EventInstrumentationURL     = "https://github.com/AISHU-Technology/TelemetrySDK-Go?path=/exporter/ar_event"
+	EventInstrumentationURL     = "https://github.com/kweaver-ai/TelemetrySDK-Go?path=/exporter/ar_event"
 )

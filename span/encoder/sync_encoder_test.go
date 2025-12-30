@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/exporter"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/exporter"
 )
 
 func TestNewSyncEncoder(t *testing.T) {

@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/eventsdk"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/resource"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/eventsdk"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/resource"
 )
 
 // 跨包实现接口占位用。

@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 )
 
 // log level text format

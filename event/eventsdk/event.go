@@ -11,7 +11,7 @@ import (
 	"github.com/oklog/ulid/v2"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/custom_errors"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/custom_errors"
 )
 
 // Event 对外暴露的 event 接口。

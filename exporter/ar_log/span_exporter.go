@@ -20,15 +20,15 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/config"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/public"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/resource"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/encoder"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/exporter"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/field"
-	spanLog "github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/log"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/open_standard"
-	sdkRuntime "github.com/AISHU-Technology/TelemetrySDK-Go/span/v2/runtime"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/config"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/public"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/resource"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/encoder"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/exporter"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
+	spanLog "github.com/kweaver-ai/TelemetrySDK-Go/span/v2/log"
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/open_standard"
+	sdkRuntime "github.com/kweaver-ai/TelemetrySDK-Go/span/v2/runtime"
 )
 
 // 跨包实现接口占位用。

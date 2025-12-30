@@ -3,7 +3,7 @@ package eventsdk
 import (
 	"encoding/json"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/event/v2/version"
+	"github.com/kweaver-ai/TelemetrySDK-Go/event/v2/version"
 )
 
 // Resource ，记录资源信息例如服务名、版本号、主机信息等。

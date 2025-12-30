@@ -11,9 +11,9 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_log"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/ar_trace"
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/resource"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_log"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/ar_trace"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/resource"
 )
 
 func main() {

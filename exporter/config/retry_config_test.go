@@ -13,7 +13,7 @@ import (
 	"github.com/cenkalti/backoff/v4"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/AISHU-Technology/TelemetrySDK-Go/exporter/v2/custom_errors"
+	"github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2/custom_errors"
 )
 
 type key string
